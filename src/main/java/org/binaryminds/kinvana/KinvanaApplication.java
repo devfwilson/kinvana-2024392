@@ -1,12 +1,158 @@
 package org.binaryminds.kinvana;
 
+import org.binaryminds.kinvana.dominio.service.IClienteService;
+import org.binaryminds.kinvana.persistence.entity.Cliente;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.List;
+import java.util.Scanner;
+
 @SpringBootApplication
-public class KinvanaApplication {
+public class KinvanaApplication implements CommandLineRunner {
+
+	// Inyección de dependencias
+	@Autowired
+	private IClienteService clienteService;
+
+	// Crear nuestro Objeto (herramienta) para interactuar con la consola
+	private static final Logger logger = LoggerFactory.getLogger(KinvanaApplication.class);
+
+	// Crear un Objeto String para saltos de línea porque no los maneja el Logger
+	String sl = System.lineSeparator(); // Salto de línea
 
 	public static void main(String[] args) {
+		logger.info("AQUÍ INICIA NUESTRA APLICACIÓN");
 		SpringApplication.run(KinvanaApplication.class, args);
+		logger.info("AQUÍ TERMINÓ LA APLICACIÓN");
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		kivanaClienteApp();
+	}
+
+	private void kivanaClienteApp() {
+		logger.info("+++++++++APLICACIÓN DE REGISTRO DE CLIENTES+++++++++");
+		var salir = false;
+		var consola = new Scanner(System.in);
+		while (!salir) {
+			var opcion = mostrarMenu(consola);
+			salir = ejecutarOpciones(consola, opcion);
+			logger.info(sl);
+		}
+	}
+
+	private int mostrarMenu(Scanner consola) {
+		logger.info("""
+				\n***Aplicación***
+				1. Listar todos los clientes.
+				2. Buscar clientes por código.
+				3. Agregar nuevo cliente.
+				4. Modificar cliente.
+				5. Eliminar cliente.
+				6. Salir.
+				Elije una opción: \s""");
+		var opcion = Integer.parseInt(consola.nextLine());
+		return opcion;
+	}
+
+	private boolean ejecutarOpciones(Scanner consola, int opcion) {
+		var salir = false;
+		switch (opcion) {
+			case 1 -> {
+				logger.info("***Listado de todos los clientes***"+sl);
+				List<Cliente> clientes = clienteService.listarClientes();
+				clientes.forEach(cliente -> logger.info(cliente.toString()+sl));
+			}
+			case 2 -> {
+				logger.info(sl+"***Buscar cliente por su código***"+sl);
+				logger.info("Ingrese el id: ");
+				var codigo = Integer.parseInt(consola.nextLine());
+				Cliente cliente = clienteService.buscarClientePorId(codigo);
+				if (cliente != null){
+					logger.info("Cliente encontrado: "+sl +cliente +sl);
+				}else {
+					logger.info("Cliente NO encontrado: "+sl +cliente +sl);
+				}
+			}
+			case 3 -> {
+				logger.info(sl+"***Agregar nuevo cliente***"+sl);
+				logger.info("Ingrese el nombre: ");
+				var nombre = consola.nextLine();
+				logger.info("Ingrese el apellido: ");
+				var apellido = consola.nextLine();
+				logger.info("Ingrese el telefono: ");
+				var telefono = consola.nextLine();
+				logger.info("Ingrese el correo: ");
+				var correo = consola.nextLine();
+				logger.info("Ingrese el genero: ");
+				var genero = consola.nextLine();
+				logger.info("Ingrese la edad: ");
+				var edad = Integer.parseInt(consola.nextLine());
+				var cliente = new Cliente();
+				cliente.setNombre(nombre);
+				cliente.setApellido(apellido);
+				cliente.setTelefono(telefono);
+				cliente.setCorreo(correo);
+				cliente.setGenero(genero);
+				cliente.setEdad(edad);
+				clienteService.guardarCliente(cliente);
+				logger.info("Cliente agregado: "+sl +cliente +sl);
+			}
+			case 4 -> {
+				logger.info("***Modificar cliente***"+sl);
+				logger.info("Ingrese el codigo del cliente a editar: ");
+				var codigo = Integer.parseInt(consola.nextLine());
+				var cliente = clienteService.buscarClientePorId(codigo);
+				logger.info("Cliente encontrado: "+sl +cliente +sl);
+				if (cliente != null){
+					logger.info("Ingrese el nombre: ");
+					var nombre = consola.nextLine();
+					logger.info("Ingrese el apellido: ");
+					var apellido = consola.nextLine();
+					logger.info("Ingrese el telefono: ");
+					var telefono = consola.nextLine();
+					logger.info("Ingrese el correo: ");
+					var correo = consola.nextLine();
+					logger.info("Ingrese el genero: ");
+					var genero = consola.nextLine();
+					logger.info("Ingrese la edad: ");
+					var edad = Integer.parseInt(consola.nextLine());
+					cliente.setNombre(nombre);
+					cliente.setApellido(apellido);
+					cliente.setTelefono(telefono);
+					cliente.setCorreo(correo);
+					cliente.setGenero(genero);
+					cliente.setEdad(edad);
+					clienteService.guardarCliente(cliente);
+					logger.info("Cliente modificado: "+sl +cliente +sl);
+				}else {
+					logger.info("Cliente NO encontrado "+sl +cliente +sl);
+				}
+			}
+			case 5 -> {
+				logger.info(sl+"***Eliminar cliente***"+sl);
+				logger.info("Ingrese el codigo del cliente a eliminar: ");
+				var codigo = Integer.parseInt(consola.nextLine());
+				var cliente = clienteService.buscarClientePorId(codigo);
+				if (cliente != null) {
+					clienteService.eliminarCliente(cliente);
+					logger.info("Cliente eliminado: "+sl +cliente +sl);
+				}else {
+					logger.info("Cliente NO encontrado "+sl +cliente +sl);
+				}
+			}
+			case 6 -> {
+				logger.info("Hasta pronto. vaquero!"+sl+sl);
+				salir = true;
+			}
+			default -> logger.info("Opción no valida!");
+		}
+		return false;
 	}
 }
