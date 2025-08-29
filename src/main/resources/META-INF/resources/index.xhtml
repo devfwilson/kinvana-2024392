@@ -43,25 +43,25 @@
                             </div>
                         </f:facet>
 <!--                        Todas las columnas-->
-                        <p:column headerText="ID">
+                        <p:column headerText="ID" sortable="true" sortBy="#{cliente.codigoCliente}" filterBy="#{cliente.codigoCliente}">
                             <h:outputText value="#{cliente.codigoCliente}"></h:outputText>
                         </p:column>
-                        <p:column headerText="NOMBRE">
+                        <p:column headerText="NOMBRE" sortable="true" sortBy="#{cliente.nombre}" filterBy="#{cliente.nombre}">
                             <h:outputText value="#{cliente.nombre}"></h:outputText>
                         </p:column>
-                        <p:column headerText="APELLIDO">
+                        <p:column headerText="APELLIDO" sortable="true" sortBy="#{cliente.apellido}" filterBy="#{cliente.apellido}">
                             <h:outputText value="#{cliente.apellido}"></h:outputText>
                         </p:column>
-                        <p:column headerText="TELÉFONO">
+                        <p:column headerText="TELÉFONO" sortable="true" sortBy="#{cliente.telefono}" filterBy="#{cliente.telefono}">
                             <h:outputText value="#{cliente.telefono}"></h:outputText>
                         </p:column>
-                        <p:column headerText="CORREO">
+                        <p:column headerText="CORREO" sortable="true" sortBy="#{cliente.correo}" filterBy="#{cliente.correo}">
                             <h:outputText value="#{cliente.correo}"></h:outputText>
                         </p:column>
-                        <p:column headerText="GÉNERO">
+                        <p:column headerText="GÉNERO" sortable="true" sortBy="#{cliente.genero}" filterBy="#{cliente.genero}">
                             <h:outputText value="#{cliente.genero}"></h:outputText>
                         </p:column>
-                        <p:column headerText="EDAD">
+                        <p:column headerText="EDAD" sortable="true" sortBy="#{cliente.edad}" filterBy="#{cliente.edad}">
                             <h:outputText value="#{cliente.edad}"></h:outputText>
                         </p:column>
                         <p:column headerText="OPCIÓN">
